@@ -8,6 +8,11 @@ module.exports = function (grunt) {
 
     var find = function (done) {
 
+        var files,
+
+        // the list of markdown files to update
+        toUpdate = [];
+
         grunt.util.spawn({
 
             cmd : 'git',
@@ -15,9 +20,6 @@ module.exports = function (grunt) {
             args : ['ls-files', '-m', '-o', '--exclude-standard', 'source/_posts']
 
         }, function (err, result, code) {
-
-            // the list of markdown files to update
-            var toUpdate = [];
 
             if (result) {
 
@@ -46,9 +48,48 @@ module.exports = function (grunt) {
 
         });
 
-    };
+    },
 
-    console.log('I am the grunt');
+    // read files
+    readFiles = function (files, callback, done) {
+
+        var index = 0,
+        len = files.length,
+
+        onDone = function () {
+
+            index += 1;
+
+            if (index >= len) {
+
+                console.log('done');
+                console.log(index);
+
+                // call the done given method
+                done();
+
+            } else {
+
+                // keep reading
+                read();
+
+            }
+
+        },
+
+        read = function () {
+
+            console.log(files[index]);
+
+            callback();
+
+            onDone();
+
+        };
+
+        read();
+
+    };
 
     // Project configuration.
     grunt.initConfig({
@@ -65,9 +106,9 @@ module.exports = function (grunt) {
     // the find task
     grunt.registerTask('find', function () {
 
-        var done = this.async(),
-        files;
+        var done = this.async();
 
+        // just call find
         find(function (result) {
 
             console.log('find: ');
@@ -82,9 +123,13 @@ module.exports = function (grunt) {
     // the read task
     grunt.registerTask('read', function () {
 
-        find(function (result) {
+        var done = this.async();
 
-            done();
+        find(function (files) {
+
+            console.log('read');
+
+            readFiles(files, function () {}, done);
 
         });
 
