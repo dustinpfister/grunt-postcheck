@@ -6,25 +6,7 @@ Gruntfile for grunt-postcheck
 
 module.exports = function (grunt) {
 
-    console.log('I am the grunt');
-
-    // Project configuration.
-    grunt.initConfig({
-        pkg : grunt.file.readJSON('package.json')
-    });
-
-    // Default task(s).
-    grunt.registerTask('default', function () {
-
-        console.log('must give a task name.');
-
-    });
-
-    // the find task
-    grunt.registerTask('find', function () {
-
-        var done = this.async(),
-        files;
+    var find = function (done) {
 
         grunt.util.spawn({
 
@@ -50,8 +32,6 @@ module.exports = function (grunt) {
 
                         if (fileName.match(/.md$/)) {
 
-                            console.log('new or edited markdown file! : ' + fileName);
-
                             toUpdate.push(fileName);
 
                         }
@@ -62,10 +42,49 @@ module.exports = function (grunt) {
 
             }
 
-            console.log('files: ');
-            console.log(toUpdate);
-
             done(toUpdate);
+
+        });
+
+    };
+
+    console.log('I am the grunt');
+
+    // Project configuration.
+    grunt.initConfig({
+        pkg : grunt.file.readJSON('package.json')
+    });
+
+    // Default task(s).
+    grunt.registerTask('default', function () {
+
+        console.log('must give a task name.');
+
+    });
+
+    // the find task
+    grunt.registerTask('find', function () {
+
+        var done = this.async(),
+        files;
+
+        find(function (result) {
+
+            console.log('find: ');
+            console.log(result);
+
+            done();
+
+        });
+
+    });
+
+    // the read task
+    grunt.registerTask('read', function () {
+
+        find(function (result) {
+
+            done();
 
         });
 
