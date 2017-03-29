@@ -6,7 +6,10 @@ Gruntfile for grunt-postcheck
 
 module.exports = function (grunt) {
 
-    var find = function (done) {
+    var fs = require('fs'),
+
+    // the find helper
+    find = function (done) {
 
         var files,
 
@@ -77,13 +80,27 @@ module.exports = function (grunt) {
 
         },
 
+        // read next file
         read = function () {
 
+            console.log('');
             console.log(files[index]);
 
-            callback();
+            fs.readFile(files[index], 'utf8', function (err, data) {
 
-            onDone();
+                var startIndex = data.indexOf('---'),
+                endIndex = data.indexOf('---', startIndex + 3),
+                header = data.substr(startIndex, endIndex - startIndex + 3);
+
+                console.log(header);
+
+                callback();
+
+                onDone();
+
+            });
+
+            console.log('');
 
         };
 
