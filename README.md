@@ -6,8 +6,13 @@ what I want for it to do is this:
 
 ## step 1: find new, and updated posts
 
+```
+$ grunt find
+```
+
 * do a $git ls-files -m -o --exclude-standard to get a list of untracked, and modified files in the git folder
 * build an array of fileNames that are untracked markdown files in the source/_posts folder
+* return that array
 
  * check the source/_posts folder of my hexo site source for changed, or new posts
  * inject a version number of 1.0 into the header of the markdown file if it is a new post

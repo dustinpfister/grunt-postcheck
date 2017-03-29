@@ -34,18 +34,27 @@ module.exports = function (grunt) {
 
         }, function (err, result, code) {
 
+            // the list of markdown files to update
+            var toUpdate = [];
+
             if (result) {
 
+                // all files in the result
                 files = result.stdout.split('\n');
 
-                console.log(files);
-
+                // run over all of them
                 files.forEach(function (fileName) {
 
                     // is it in posts?
                     if (fileName.match(/^source\/_posts/)) {
 
-                        console.log(fileName);
+                        if (fileName.match(/.md$/)) {
+
+                            console.log('new or edited markdown file! : ' + fileName);
+
+                            toUpdate.push(fileName);
+
+                        }
 
                     }
 
@@ -53,7 +62,10 @@ module.exports = function (grunt) {
 
             }
 
-            done();
+            console.log('files: ');
+            console.log(toUpdate);
+
+            done(toUpdate);
 
         });
 
