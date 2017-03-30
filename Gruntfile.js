@@ -83,7 +83,7 @@ module.exports = function (grunt) {
         // read next file
         read = function () {
 
-            console.log('');
+            console.log('reading file:');
             console.log(files[index]);
 
             fs.readFile(files[index], 'utf8', function (err, data) {
@@ -146,7 +146,25 @@ module.exports = function (grunt) {
 
             console.log('read');
 
-            readFiles(files, function () {}, done);
+            console.log(files);
+
+            if (typeof files === 'object') {
+
+                if (files.length > 0) {
+
+                    readFiles(files, function () {}, done);
+
+                } else {
+
+                    console.log('no files to update');
+
+                }
+
+            } else {
+
+                console.log('files is not an object');
+
+            }
 
         });
 
