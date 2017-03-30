@@ -1,8 +1,25 @@
 # grunt-postcheck
 
-This is my first grunt task that I have written
+grunt-postcheck is the first grunt task I have written to help automate a process with the development of my personal website. What I wanted is a source control or sorts, but for each blog post within a collection. I was thinking that maybe I can get into submodules, and maybe that would be a good way to handle it. Still I made this with the idea of just doing everything within a single git folder, with no submodules.
 
-what I want for it to do is this:
+## So the header of each markdown file has:
+
+* an id
+* a version number
+* a date created
+* a date updated
+
+A post also has additional properties, but these are what is of main interest to grunt-postcheck.
+
+## So basic idea of the task is this:
+
+* check my source/_posts dir for new or modified markdown files.
+* for each file found 
+    * set, or update the id, version number, date created, and date updated of the file.
+    * do a git add filename
+    * do a git commit -m [pc;up#1;v1.7]
+
+I was thinking about adding tags, but then I thought that I would end up with allot of tags, and I don't care to use tags in that faction. As such the commit message can be used as a kind of tag, I just want all of the messages to follow a certain pattern.
 
 ## task find:
 
@@ -18,15 +35,3 @@ $ grunt find
 
 * go over an array of fileNames from a find task
 * open the file, and get the markdown table that should be it's meta data.
-
-## task commit
-
-## task push
-
-* inject a version number of 1.0 into the header of the markdown file if it is a new post
-* bump patch version number of a post if it is a old post that was edited.
-* set the update date to the current data
-* create a commit message like "pn1:1.0;pu0:1.1", that means (post new id 1 version, post update id 0 version)
-* bump main package.json version patch number
-* add all post files to be changed with git add
-* push the commit with the message.
