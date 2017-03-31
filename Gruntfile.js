@@ -98,7 +98,13 @@ module.exports = function (grunt) {
 
             obj = {}
 
-            return keys;
+            keys.forEach(function (el) {
+
+                obj[el[0]] = el[1];
+
+            });
+
+            return obj;
 
         },
 
