@@ -80,6 +80,22 @@ module.exports = function (grunt) {
 
         },
 
+        // get the header of the the given markdown data
+        getHeader = function (data) {
+
+            var startIndex = data.indexOf('---'),
+            endIndex = data.indexOf('---', startIndex + 3);
+
+            return {
+
+                startIndex : startIndex,
+                endIndex : endIndex,
+                text : data.substr(startIndex, endIndex - startIndex + 3)
+
+            };
+
+        },
+
         // read next file
         read = function () {
 
@@ -88,11 +104,7 @@ module.exports = function (grunt) {
 
             fs.readFile(files[index], 'utf8', function (err, data) {
 
-                var startIndex = data.indexOf('---'),
-                endIndex = data.indexOf('---', startIndex + 3),
-                header = data.substr(startIndex, endIndex - startIndex + 3);
-
-                console.log(header);
+                console.log(getHeader(data));
 
                 callback();
 
