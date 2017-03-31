@@ -5,6 +5,7 @@ tags: [js,JSON, automation]
 layout: post
 categories: api
 id : 1
+version:1.0
 ---
 
-I am the other thing. okay now. I am a good guy man. blue man group. Internet explorer. da. okay lets get this done fast and move on.
+I am the other thing. okay now. I am a good guy man. blue man group. Internet explorer. da. okay lets get this done fast and move on. how about now.

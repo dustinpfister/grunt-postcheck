@@ -128,6 +128,32 @@ module.exports = function (grunt) {
 
         },
 
+        // take a look at the given header obtained with getHeader, and update it's info.
+        updateHeader = function (header) {
+
+            var now = new Date(),
+            ver;
+
+            // set or change time updated to now.
+            header.obj.updated = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+
+            // if we have a version number bump it.
+            if ('version' in header.obj) {
+
+                ver = header.obj.version.split('.');
+                ver[ver.length - 1] = Number(ver[ver.length - 1]) + 1;
+                header.obj.version = ver.join('.');
+
+            } else {
+
+                header.obj.version = '1.0';
+
+            }
+
+            return header;
+
+        },
+
         // read next file
         read = function () {
 
@@ -136,7 +162,13 @@ module.exports = function (grunt) {
 
             fs.readFile(files[index], 'utf8', function (err, data) {
 
-                console.log(getHeader(data));
+                var header = getHeader(data);
+
+                console.log('the header:');
+                console.log(header);
+
+                console.log('the header updated:');
+                console.log(updateHeader(header));
 
                 callback();
 
