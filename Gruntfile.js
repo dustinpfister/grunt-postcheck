@@ -179,6 +179,16 @@ module.exports = function (grunt) {
 
                 console.log('content');
 
+                fs.writeFile(files[index]+'.new', newText, function (err) {
+
+                    if (err) {
+
+                        console.log('error writing file.');
+
+                    }
+
+                })
+
                 callback();
 
                 onDone();
