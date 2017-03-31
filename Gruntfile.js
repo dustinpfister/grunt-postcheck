@@ -162,13 +162,13 @@ module.exports = function (grunt) {
 
             fs.readFile(files[index], 'utf8', function (err, data) {
 
-                var header = getHeader(data);
+                var header = updateHeader(getHeader(data)),
+                content = data.substr(header.endIndex, data.length - header.endIndex),
+                newText = '---' + JSON.stringify(header.obj) + content;
 
-                console.log('the header:');
-                console.log(header);
+                console.log(newText);
 
-                console.log('the header updated:');
-                console.log(updateHeader(header));
+                console.log('content')
 
                 callback();
 
