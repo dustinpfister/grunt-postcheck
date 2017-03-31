@@ -80,6 +80,28 @@ module.exports = function (grunt) {
 
         },
 
+        headerTextToObj = function (text) {
+
+            var keys = text.split(/\r\n|\n/g).filter(function (element) {
+
+                    if (element === '---') {
+
+                        return false;
+
+                    }
+
+                    return true;
+
+                }).map(function (el) {
+                    return el.split(/:(.+)/)
+                }),
+
+            obj = {}
+
+            return keys;
+
+        },
+
         // get the header of the the given markdown data
         getHeader = function (data) {
 
@@ -89,10 +111,12 @@ module.exports = function (grunt) {
 
             return {
 
-                startIndex : startIndex,
-                endIndex : endIndex,
-                text : text,
-                obj : text.split(/\r\n|\n/g)
+                startIndex : startIndex, // start index
+                endIndex : endIndex, // end index
+                text : text, // raw text
+
+                // object form of header
+                obj : headerTextToObj(text)
 
             };
 
