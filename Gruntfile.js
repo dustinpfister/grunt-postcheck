@@ -150,6 +150,15 @@ module.exports = function (grunt) {
 
             }
 
+            // update text;
+            header.text = '';
+
+            for (var prop in header.obj) {
+
+                header.text += prop + ':' + header.obj[prop] + '\r\n';
+
+            }
+
             return header;
 
         },
@@ -164,11 +173,11 @@ module.exports = function (grunt) {
 
                 var header = updateHeader(getHeader(data)),
                 content = data.substr(header.endIndex, data.length - header.endIndex),
-                newText = '---' + JSON.stringify(header.obj) + content;
+                newText = '---' + header.text + content;
 
                 console.log(newText);
 
-                console.log('content')
+                console.log('content');
 
                 callback();
 
