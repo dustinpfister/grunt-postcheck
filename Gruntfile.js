@@ -84,13 +84,15 @@ module.exports = function (grunt) {
         getHeader = function (data) {
 
             var startIndex = data.indexOf('---'),
-            endIndex = data.indexOf('---', startIndex + 3);
+            endIndex = data.indexOf('---', startIndex + 3),
+            text = data.substr(startIndex, endIndex - startIndex + 3);
 
             return {
 
                 startIndex : startIndex,
                 endIndex : endIndex,
-                text : data.substr(startIndex, endIndex - startIndex + 3)
+                text : text,
+                obj : text.split(/\r\n|\n/g)
 
             };
 
