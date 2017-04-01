@@ -8,6 +8,8 @@ module.exports = function (grunt) {
 
     var fs = require('fs'),
 
+    header,
+
     // the find helper
     find = function (done) {
 
@@ -16,6 +18,8 @@ module.exports = function (grunt) {
         // the list of markdown files to update
         toUpdate = [];
 
+        console.log('finding...');
+
         grunt.util.spawn({
 
             cmd : 'git',
@@ -23,6 +27,16 @@ module.exports = function (grunt) {
             args : ['ls-files', '-m', '-o', '--exclude-standard', 'source/_posts']
 
         }, function (err, result, code) {
+
+            console.log('found');
+            console.log(code);
+
+            if (err) {
+                console.log('yes thats it');
+
+                done(toUpdate);
+
+            }
 
             if (result) {
 
@@ -45,16 +59,16 @@ module.exports = function (grunt) {
 
                 });
 
-            }
+                done(toUpdate);
 
-            done(toUpdate);
+            }
 
         });
 
     },
 
     // read files
-    readFiles = function (files, callback, done) {
+    readFiles = function (files, callback, fail) {
 
         var index = 0,
         len = files.length,
@@ -173,8 +187,11 @@ module.exports = function (grunt) {
 
             fs.readFile(files[index], 'utf8', function (err, data) {
 
-                var header = updateHeader(getHeader(data)),
-                content = data.substr(header.endIndex, data.length - header.endIndex),
+                var content,
+                newText;
+
+                header = updateHeader(getHeader(data));
+                content = data.substr(header.endIndex, data.length - header.endIndex);
                 newText = '---' + header.text + content;
 
                 console.log(newText);
@@ -205,6 +222,8 @@ module.exports = function (grunt) {
             console.log('');
 
         };
+
+        fail = fail || function () {};
 
         read();
 
@@ -257,6 +276,46 @@ module.exports = function (grunt) {
                     readFiles(files, function () {
 
                         console.log('okay done');
+
+                        done();
+
+                    });
+
+                } else {
+
+                    console.log('no files to read');
+
+                }
+
+            } else {
+
+                console.log('files is not an object');
+
+            }
+
+        });
+
+    });
+
+    // the read task
+    grunt.registerTask('update', function () {
+
+        var done = this.async();
+
+        console.log('okay so far so good.');
+
+        find(function (files) {
+
+            console.log('okay');
+
+            if (typeof files === 'object') {
+
+                if (files.length > 0) {
+
+                    readFiles(files, function (header) {
+
+                        console.log('the header');
+                        console.log(header);
 
                         done();
 
