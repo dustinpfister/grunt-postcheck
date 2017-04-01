@@ -68,8 +68,10 @@ module.exports = function (grunt) {
                 console.log('done');
                 console.log(index);
 
+                callback();
+
                 // call the done given method
-                done();
+                //done();
 
             } else {
 
@@ -179,17 +181,22 @@ module.exports = function (grunt) {
 
                 console.log('content');
 
-                fs.writeFile(files[index]+'.new', newText, function (err) {
+                if (err) {
 
-                    if (err) {
+                    console.log('error reading file');
 
-                        console.log('error writing file.');
+                } else {
 
-                    }
+                    console.log('');
+                    console.log('');
+                    console.log('newText:');
+                    console.log('');
+                    console.log(newText);
+                    console.log('');
 
-                })
+                }
 
-                callback();
+                //callback();
 
                 onDone();
 
@@ -247,11 +254,17 @@ module.exports = function (grunt) {
 
                 if (files.length > 0) {
 
-                    readFiles(files, function () {}, done);
+                    readFiles(files, function () {
+
+                        console.log('okay done');
+
+                        done();
+
+                    });
 
                 } else {
 
-                    console.log('no files to update');
+                    console.log('no files to read');
 
                 }
 
