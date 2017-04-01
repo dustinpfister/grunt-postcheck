@@ -192,7 +192,7 @@ module.exports = function (grunt) {
 
                 header = updateHeader(getHeader(data));
                 content = data.substr(header.endIndex, data.length - header.endIndex);
-                newText = '---' + header.text + content;
+                newText = '---\r\n' + header.text + content;
 
                 console.log(newText);
 
@@ -201,6 +201,8 @@ module.exports = function (grunt) {
                 if (err) {
 
                     console.log('error reading file');
+
+                    onDone();
 
                 } else {
 
@@ -211,11 +213,16 @@ module.exports = function (grunt) {
                     console.log(newText);
                     console.log('');
 
+                    fs.writeFile(files[index], newText, function (err) {
+
+                        onDone();
+
+                    });
+
                 }
 
                 //callback();
 
-                onDone();
 
             });
 
@@ -334,7 +341,6 @@ module.exports = function (grunt) {
             }
 
         });
-
     });
 
 };
