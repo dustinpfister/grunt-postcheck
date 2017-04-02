@@ -67,6 +67,139 @@ module.exports = function (grunt) {
 
     },
 
+    headerTextToObj = function (text) {
+
+        var keys = text.split(/\r\n|\n/g).filter(function (element) {
+
+                if (element === '---') {
+
+                    return false;
+
+                }
+
+                return true;
+
+            }).map(function (el) {
+                return el.split(/:(.+)/)
+            }),
+
+        obj = {}
+
+        keys.forEach(function (el) {
+
+            obj[el[0]] = el[1];
+
+        });
+
+        return obj;
+
+    },
+
+    // get the header of the the given markdown data
+    getHeader = function (data) {
+
+        var startIndex = data.indexOf('---'),
+        endIndex = data.indexOf('---', startIndex + 3),
+        text = data.substr(startIndex, endIndex - startIndex + 3);
+
+        return {
+
+            startIndex : startIndex, // start index
+            endIndex : endIndex, // end index
+            text : text, // raw text
+
+            // object form of header
+            obj : headerTextToObj(text)
+
+        };
+
+    },
+
+    // take a look at the given header obtained with getHeader, and update it's info.
+    updateHeader = function (header) {
+
+        var now = new Date(),
+        ver;
+
+        // set or change time updated to now.
+        header.obj.updated = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+
+        // if we have a version number bump it.
+        if ('version' in header.obj) {
+
+            ver = header.obj.version.split('.');
+            ver[ver.length - 1] = Number(ver[ver.length - 1]) + 1;
+            header.obj.version = ver.join('.');
+
+        } else {
+
+            header.obj.version = '1.0';
+
+        }
+
+        // update text;
+        header.text = '';
+
+        for (var prop in header.obj) {
+
+            header.text += prop + ':' + header.obj[prop] + '\r\n';
+
+        }
+
+        return header;
+
+    },
+
+    // read a file of the given index from an array of fileNames.
+    read = function (files, index, done) {
+
+        console.log('reading file:');
+        console.log(files[index]);
+
+        done = done || function () {};
+
+        fs.readFile(files[index], 'utf8', function (err, data) {
+
+            var content,
+            newText;
+
+            header = updateHeader(getHeader(data));
+            content = data.substr(header.endIndex, data.length - header.endIndex);
+            newText = '---\r\n' + header.text + content;
+
+            console.log(newText);
+
+            console.log('content');
+
+            if (err) {
+
+                console.log('error reading file');
+
+                done();
+
+            } else {
+
+                console.log('');
+                console.log('');
+                console.log('newText:');
+                console.log('');
+                console.log(newText);
+                console.log('');
+
+                fs.writeFile(files[index], newText, function (err) {
+
+                    done();
+
+                });
+
+            }
+
+        });
+
+        console.log('');
+
+    };
+
     // read files
     readFiles = function (files, callback, fail) {
 
@@ -90,149 +223,15 @@ module.exports = function (grunt) {
             } else {
 
                 // keep reading
-                read();
+                read(files, index, onDone);
 
             }
 
         },
-
-        headerTextToObj = function (text) {
-
-            var keys = text.split(/\r\n|\n/g).filter(function (element) {
-
-                    if (element === '---') {
-
-                        return false;
-
-                    }
-
-                    return true;
-
-                }).map(function (el) {
-                    return el.split(/:(.+)/)
-                }),
-
-            obj = {}
-
-            keys.forEach(function (el) {
-
-                obj[el[0]] = el[1];
-
-            });
-
-            return obj;
-
-        },
-
-        // get the header of the the given markdown data
-        getHeader = function (data) {
-
-            var startIndex = data.indexOf('---'),
-            endIndex = data.indexOf('---', startIndex + 3),
-            text = data.substr(startIndex, endIndex - startIndex + 3);
-
-            return {
-
-                startIndex : startIndex, // start index
-                endIndex : endIndex, // end index
-                text : text, // raw text
-
-                // object form of header
-                obj : headerTextToObj(text)
-
-            };
-
-        },
-
-        // take a look at the given header obtained with getHeader, and update it's info.
-        updateHeader = function (header) {
-
-            var now = new Date(),
-            ver;
-
-            // set or change time updated to now.
-            header.obj.updated = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-
-            // if we have a version number bump it.
-            if ('version' in header.obj) {
-
-                ver = header.obj.version.split('.');
-                ver[ver.length - 1] = Number(ver[ver.length - 1]) + 1;
-                header.obj.version = ver.join('.');
-
-            } else {
-
-                header.obj.version = '1.0';
-
-            }
-
-            // update text;
-            header.text = '';
-
-            for (var prop in header.obj) {
-
-                header.text += prop + ':' + header.obj[prop] + '\r\n';
-
-            }
-
-            return header;
-
-        },
-
-        // read next file
-        read = function () {
-
-            console.log('reading file:');
-            console.log(files[index]);
-
-            fs.readFile(files[index], 'utf8', function (err, data) {
-
-                var content,
-                newText;
-
-                header = updateHeader(getHeader(data));
-                content = data.substr(header.endIndex, data.length - header.endIndex);
-                newText = '---\r\n' + header.text + content;
-
-                console.log(newText);
-
-                console.log('content');
-
-                if (err) {
-
-                    console.log('error reading file');
-
-                    onDone();
-
-                } else {
-
-                    console.log('');
-                    console.log('');
-                    console.log('newText:');
-                    console.log('');
-                    console.log(newText);
-                    console.log('');
-
-                    fs.writeFile(files[index], newText, function (err) {
-
-                        onDone();
-
-                    });
-
-                }
-
-                //callback();
-
-
-            });
-
-            console.log('');
-
-        };
 
         fail = fail || function () {};
 
-        read();
+        read(files, index, onDone);
 
     };
 
