@@ -153,7 +153,7 @@ module.exports = function (grunt) {
     },
 
     // read a file of the given index from an array of fileNames.
-    read = function (files, index, done, write) {
+    read = function (files, index, done, write, commit) {
 
         console.log('reading file:');
         console.log(files[index]);
@@ -195,7 +195,17 @@ module.exports = function (grunt) {
 
                     fs.writeFile(files[index], newText, function (err) {
 
-                        done();
+                        if (commit) {
+
+                            console.log('yes commit');
+
+                        } else {
+
+                            console.log('read done');
+
+                            done();
+
+                        }
 
                     });
 
@@ -245,9 +255,10 @@ module.exports = function (grunt) {
         };
 
         obj.callback = obj.callback || function () {};
+        obj.commit = obj.commit || false;
         //obj.fail = obj.fail || function () {};
 
-        read(obj.files, index, onDone, obj.write);
+        read(obj.files, index, onDone, obj.write, obj.commit);
 
     };
 
@@ -310,17 +321,6 @@ module.exports = function (grunt) {
 
                     });
 
-                    /*
-                    readFiles(files, function () {
-
-                    console.log('okay done');
-
-                    done();
-
-                    });
-
-                     */
-
                 } else {
 
                     console.log('no files to read');
@@ -346,7 +346,6 @@ module.exports = function (grunt) {
 
         find(function (files) {
 
-
             if (typeof files === 'object') {
 
                 if (files.length > 0) {
@@ -365,17 +364,6 @@ module.exports = function (grunt) {
                         remote : false
 
                     });
-                    /*
-                    readFiles(files, function () {
-
-                    console.log('the header');
-                    console.log(header);
-
-                    done();
-
-                    }, true);
-
-                     */
 
                 } else {
 
@@ -393,11 +381,11 @@ module.exports = function (grunt) {
     });
 
     // update files, commit, and push.
-    grunt.registerTask('push', function () {
+    grunt.registerTask('commit', function () {
 
         var done = this.async();
 
-        console.log('pushing...');
+        console.log('commiting changes');
 
         find(function (files) {
 
@@ -405,11 +393,20 @@ module.exports = function (grunt) {
 
                 if (files.length > 0) {
 
-                    readFiles(files, function (header) {
+                    readFiles({
 
-                        done();
+                        files : files,
+                        callBack : function () {
 
-                    }, true);
+                            console.log('done with commit task.');
+
+                            done();
+                        },
+                        write : true,
+                        commit : true,
+                        remote : false
+
+                    });
 
                 } else {
 
