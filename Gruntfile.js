@@ -164,6 +164,8 @@ module.exports = function (grunt) {
         fs.readFile(files[index], 'utf8', function (err, data) {
 
             var content,
+            git_stage,
+            git_commit,
             newText;
 
             header = updateHeader(getHeader(data));
@@ -192,30 +194,27 @@ module.exports = function (grunt) {
 
                             console.log('yes commit');
 
-                            var stage = spawn('git', ['add', files[index]]);
+                            git_stage = spawn('git', ['add', files[index]]);
 
-                            stage.stdout.on('data', function (data) {
-
-                                console.log('stage out:');
-                                console.log( ` data ` );
-
-                            });
-
-                            stage.stderr.on('data', function (data) {
+                            git_stage.stderr.on('data', function (data) {
 
                                 console.log('stage error');
                                 console.log( ` data ` );
 
+                                //done();
+
                             }); ;
 
-                            stage.on('close', function (data) {
+                            git_stage.on('close', function (data) {
 
                                 console.log('stage close:');
                                 console.log( ` data ` );
 
-                            });
+                                git_stage = spawn('git', ['commit', '-m', 'first']);
 
-                            done();
+                                done();
+
+                            });
 
                         } else {
 
