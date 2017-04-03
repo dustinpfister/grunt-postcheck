@@ -329,7 +329,7 @@ module.exports = function (grunt) {
 
                 if (files.length > 0) {
 
-                    readFiles(files, function (header) {
+                    readFiles(files, function () {
 
                         console.log('the header');
                         console.log(header);
