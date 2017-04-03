@@ -9,4 +9,4 @@ updated:2017-4-2 9:10:29
 version:1.5
 ---
 
-this is the first post. I have changed it. maybe it will read. still working on it. well. okay I might have it now. hello? yes now.
+this is the first post. I have changed it. maybe it will read. still working on it. well. okay I might have it now. hello? yes now. so are we still good?

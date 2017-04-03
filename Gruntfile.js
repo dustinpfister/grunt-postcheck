@@ -151,12 +151,13 @@ module.exports = function (grunt) {
     },
 
     // read a file of the given index from an array of fileNames.
-    read = function (files, index, done) {
+    read = function (files, index, done, write) {
 
         console.log('reading file:');
         console.log(files[index]);
 
         done = done || function () {};
+        write = write || false;
 
         fs.readFile(files[index], 'utf8', function (err, data) {
 
@@ -186,11 +187,21 @@ module.exports = function (grunt) {
                 console.log(newText);
                 console.log('');
 
-                fs.writeFile(files[index], newText, function (err) {
+                if (write) {
 
-                    done();
+                    console.log('writing to file');
 
-                });
+                    fs.writeFile(files[index], newText, function (err) {
+
+                        done();
+
+                    });
+
+                } else {
+
+                    console.log('not writing');
+
+                }
 
             }
 
