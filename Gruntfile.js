@@ -8,6 +8,8 @@ module.exports = function (grunt) {
 
     var fs = require('fs'),
 
+    spawn = require('child_process').spawn,
+
     header,
 
     // the find helper
@@ -212,10 +214,12 @@ module.exports = function (grunt) {
     };
 
     // read files
-    readFiles = function (files, callback, write) {
+    //readFiles = function (files, callback, write) {
+
+    readFiles = function (obj) {
 
         var index = 0,
-        len = files.length,
+        len = obj.files.length,
 
         onDone = function () {
 
@@ -226,7 +230,7 @@ module.exports = function (grunt) {
                 console.log('done');
                 console.log(index);
 
-                callback();
+                obj.callback();
 
                 // call the done given method
                 //done();
@@ -234,15 +238,16 @@ module.exports = function (grunt) {
             } else {
 
                 // keep reading
-                read(files, index, onDone);
+                read(obj.files, index, onDone);
 
             }
 
-        },
+        };
 
-        fail = fail || function () {};
+        obj.callback = obj.callback || function () {};
+        //obj.fail = obj.fail || function () {};
 
-        read(files, index, onDone,write);
+        read(obj.files, index, onDone, obj.write);
 
     };
 
@@ -290,13 +295,31 @@ module.exports = function (grunt) {
 
                 if (files.length > 0) {
 
-                    readFiles(files, function () {
+                    readFiles({
 
-                        console.log('okay done');
+                        files : files,
+                        callBack : function () {
 
-                        done();
+                            console.log('done with read task.');
+
+                            done();
+                        },
+                        write : false,
+                        commit : false,
+                        remote : false
 
                     });
+
+                    /*
+                    readFiles(files, function () {
+
+                    console.log('okay done');
+
+                    done();
+
+                    });
+
+                     */
 
                 } else {
 
@@ -319,24 +342,40 @@ module.exports = function (grunt) {
 
         var done = this.async();
 
-        console.log('okay so far so good.');
+        console.log('starting update task');
 
         find(function (files) {
 
-            console.log('okay');
 
             if (typeof files === 'object') {
 
                 if (files.length > 0) {
 
+                    readFiles({
+
+                        files : files,
+                        callBack : function () {
+
+                            console.log('done with read task.');
+
+                            done();
+                        },
+                        write : true,
+                        commit : false,
+                        remote : false
+
+                    });
+                    /*
                     readFiles(files, function () {
 
-                        console.log('the header');
-                        console.log(header);
+                    console.log('the header');
+                    console.log(header);
 
-                        done();
+                    done();
 
                     }, true);
+
+                     */
 
                 } else {
 
@@ -367,7 +406,6 @@ module.exports = function (grunt) {
                 if (files.length > 0) {
 
                     readFiles(files, function (header) {
-
 
                         done();
 
