@@ -212,7 +212,7 @@ module.exports = function (grunt) {
     };
 
     // read files
-    readFiles = function (files, callback, fail) {
+    readFiles = function (files, callback, write) {
 
         var index = 0,
         len = files.length,
@@ -242,7 +242,7 @@ module.exports = function (grunt) {
 
         fail = fail || function () {};
 
-        read(files, index, onDone);
+        read(files, index, onDone,write);
 
     };
 
@@ -314,7 +314,7 @@ module.exports = function (grunt) {
 
     });
 
-    // the read task
+    // update files but do not commit.
     grunt.registerTask('update', function () {
 
         var done = this.async();
@@ -336,7 +336,42 @@ module.exports = function (grunt) {
 
                         done();
 
-                    });
+                    }, true);
+
+                } else {
+
+                    console.log('no files to read');
+
+                }
+
+            } else {
+
+                console.log('files is not an object');
+
+            }
+
+        });
+    });
+
+    // update files, commit, and push.
+    grunt.registerTask('push', function () {
+
+        var done = this.async();
+
+        console.log('pushing...');
+
+        find(function (files) {
+
+            if (typeof files === 'object') {
+
+                if (files.length > 0) {
+
+                    readFiles(files, function (header) {
+
+
+                        done();
+
+                    }, true);
 
                 } else {
 
