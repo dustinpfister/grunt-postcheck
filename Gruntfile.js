@@ -182,13 +182,6 @@ module.exports = function (grunt) {
 
             } else {
 
-                console.log('');
-                console.log('');
-                console.log('newText:');
-                console.log('');
-                console.log(newText);
-                console.log('');
-
                 if (write) {
 
                     console.log('writing to file');
@@ -201,7 +194,28 @@ module.exports = function (grunt) {
 
                             var stage = spawn('git', ['add', files[index]]);
 
-                                done();
+                            stage.stdout.on('data', function (data) {
+
+                                console.log('stage out:');
+                                console.log( ` data ` );
+
+                            });
+
+                            stage.stderr.on('data', function (data) {
+
+                                console.log('stage error');
+                                console.log( ` data ` );
+
+                            }); ;
+
+                            stage.on('close', function (data) {
+
+                                console.log('stage close:');
+                                console.log( ` data ` );
+
+                            });
+
+                            done();
 
                         } else {
 
