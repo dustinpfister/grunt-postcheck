@@ -199,6 +199,10 @@ module.exports = function (grunt) {
 
                             console.log('yes commit');
 
+                            var stage = spawn('git', ['add', files[index]]);
+
+                                done();
+
                         } else {
 
                             console.log('read done');
