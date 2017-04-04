@@ -158,8 +158,6 @@ module.exports = function (grunt) {
         fs.readFile(files[index], 'utf8', function (err, data) {
 
             var content,
-            git_stage,
-            git_commit,
             newText;
 
             header = updateHeader(getHeader(data));
@@ -184,6 +182,9 @@ module.exports = function (grunt) {
                     console.log('writing to file');
 
                     fs.writeFile(files[index], newText, function (err) {
+
+                        var git_stage,
+                        git_commit;
 
                         if (commit) {
 
