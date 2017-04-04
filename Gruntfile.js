@@ -199,7 +199,7 @@ module.exports = function (grunt) {
                             git_stage.stderr.on('data', function (data) {
 
                                 console.log('stage error');
-                                console.log( ` data ` );
+                                //console.log( ` data ` );
 
                                 //done();
 
@@ -208,9 +208,13 @@ module.exports = function (grunt) {
                             git_stage.on('close', function (data) {
 
                                 console.log('stage close:');
-                                console.log( ` data ` );
+                                console.log(header);
+                                console.log();
+                                console.log(header.obj.id);
+                                //console.log(data);
 
-                                git_stage = spawn('git', ['commit', '-m', 'first']);
+
+                                git_stage = spawn('git', ['commit', '-m', 'post-check;id#:' + header.obj.id + ';v:' + header.obj.version + ';']);
 
                                 done();
 
