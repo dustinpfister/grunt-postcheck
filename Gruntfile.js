@@ -194,11 +194,15 @@ module.exports = function (grunt) {
 
                             git_stage.on('close', function (data) {
 
-                                console.log('yes close');
+                                git_commit = spawn('git', ['commit', '-m', 'post-check;id#:' + header.obj.id + ';v:' + header.obj.version + ';']);
 
-                                git_stage = spawn('git', ['commit', '-m', 'post-check;id#:' + header.obj.id + ';v:' + header.obj.version + ';']);
+                                git_commit.on('close', function (data) {
 
-                                done();
+                                    console.log('yes commit close');
+
+                                    done();
+
+                                });
 
                             });
 
@@ -281,6 +285,8 @@ module.exports = function (grunt) {
 
         // just call find
         find(function (result) {
+
+            console.log(result);
 
             done();
 
