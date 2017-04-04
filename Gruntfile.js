@@ -30,9 +30,6 @@ module.exports = function (grunt) {
 
         }, function (err, result, code) {
 
-            console.log('found');
-            console.log(code);
-
             if (err) {
                 console.log('yes thats it');
 
@@ -155,9 +152,6 @@ module.exports = function (grunt) {
     // read a file of the given index from an array of fileNames.
     read = function (files, index, done, write, commit) {
 
-        console.log('reading file:');
-        console.log(files[index]);
-
         done = done || function () {};
         write = write || false;
 
@@ -172,10 +166,6 @@ module.exports = function (grunt) {
             content = data.substr(header.endIndex, data.length - header.endIndex);
             newText = '---\r\n' + header.text + content;
 
-            console.log(newText);
-
-            console.log('content');
-
             if (err) {
 
                 console.log('error reading file');
@@ -183,6 +173,11 @@ module.exports = function (grunt) {
                 done();
 
             } else {
+
+                console.log('id# ' + header.obj.id);
+                console.log('write = ' + write);
+                console.log('');
+                console.log('');
 
                 if (write) {
 
@@ -196,23 +191,9 @@ module.exports = function (grunt) {
 
                             git_stage = spawn('git', ['add', files[index]]);
 
-                            git_stage.stderr.on('data', function (data) {
-
-                                console.log('stage error');
-                                //console.log( ` data ` );
-
-                                //done();
-
-                            }); ;
-
                             git_stage.on('close', function (data) {
 
-                                console.log('stage close:');
-                                console.log(header);
-                                console.log();
-                                console.log(header.obj.id);
-                                //console.log(data);
-
+                                console.log('yes close');
 
                                 git_stage = spawn('git', ['commit', '-m', 'post-check;id#:' + header.obj.id + ';v:' + header.obj.version + ';']);
 
@@ -258,9 +239,6 @@ module.exports = function (grunt) {
 
             if (index >= len) {
 
-                console.log('done');
-                console.log(index);
-
                 obj.callback();
 
                 // call the done given method
@@ -269,7 +247,7 @@ module.exports = function (grunt) {
             } else {
 
                 // keep reading
-                read(obj.files, index, onDone);
+                read(obj.files, index, onDone, obj.write, obj.commit);
 
             }
 
@@ -303,9 +281,6 @@ module.exports = function (grunt) {
         // just call find
         find(function (result) {
 
-            console.log('find: ');
-            console.log(result);
-
             done();
 
         });
@@ -318,10 +293,6 @@ module.exports = function (grunt) {
         var done = this.async();
 
         find(function (files) {
-
-            console.log('read');
-
-            console.log(files);
 
             if (typeof files === 'object') {
 
@@ -422,6 +393,7 @@ module.exports = function (grunt) {
                             console.log('done with commit task.');
 
                             done();
+
                         },
                         write : true,
                         commit : true,
