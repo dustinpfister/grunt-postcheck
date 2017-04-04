@@ -5,8 +5,8 @@ tags: [js,JSON, automation]
 layout: post
 categories: api
 id : 0
-updated:2017-4-3 20:19:13
-version:1.7
+updated:2017-4-3 20:20:9
+version:1.8
 ---
 
-this is the first post. I have changed it. maybe it will read. still working on it. well. yes weh have changes here. okay. so whats the message. test. test.
+this is the first post. I have changed it. maybe it will read. still working on it. well. yes weh have changes here. okay. so whats the message. test. test. test.
